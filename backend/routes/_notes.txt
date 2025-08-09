@@ -1,0 +1,1 @@
+This folder contains simple routes: site creation and chatbot stub.
