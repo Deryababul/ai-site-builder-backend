@@ -198,10 +198,15 @@ ${slimmedBody}
       const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
       const bodyHtml = bodyMatch ? bodyMatch[1] : html;
 
-      const prompt =
-        `Aşağıdaki HTML <body> içeriğinde kullanıcıdan gelen komutu uygula. ` +
-        `Sadece güncellenmiş <body> içeriği döndür. Komut: "${req.body.command}"\n\nBODY:\n${bodyHtml.slice(0, 15000)}`;
+      const prompt = `
+Aşağıdaki HTML <body> içeriğinde kullanıcıdan gelen komutu uygula ve sadece güncellenmiş <body> içeriğini döndür. Lütfen yalnızca gerekli düzenlemeleri yap ve gereksiz değişikliklerden kaçın. 
+Komut: "${req.body.command}"
 
+BODY:
+${bodyHtml.slice(0, 15000)}
+
+Lütfen HTML yapısını bozmadan, verilen komut doğrultusunda güncellenmiş ve geçerli <body> içeriğini döndür.`;
+      console.log("prompt",prompt);
       const completion = await openai.chat.completions.create(
         {
           model: 'gpt-4o-mini',

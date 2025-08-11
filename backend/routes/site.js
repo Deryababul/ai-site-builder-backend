@@ -76,6 +76,11 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
           <span>Chatbot ile Düzenle</span>
           <button id="chatbot-close" onclick="closeChatbot()">×</button>
         </div>
+        <!-- Öneri promptlar -->
+        <div style="display:flex;gap:12px;margin-bottom:10px;">
+          <button type="button" class="suggested-prompt-btn" onclick="setPromptInput('Başlığı kırmızı renk yap')">Başlığı kırmızı renk yap</button>
+          <button type="button" class="suggested-prompt-btn" onclick="setPromptInput('Tema rengini mavi yap')">Tema rengini mavi yap</button>
+        </div>
         <input id="chatbot-input" type="text" placeholder="Örn: Başlık rengini kırmızı yap" />
         <button id="chatbot-send">Gönder</button>
         <div class="chatbot-msg" id="chatbot-msg"></div>
@@ -121,6 +126,10 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
       </div>
     </div>
     <script>
+      function setPromptInput(val) {
+        var inp = document.getElementById('chatbot-input');
+        if (inp) { inp.value = val; inp.focus(); }
+      }
       function openChatbot() {
         document.getElementById('chatbot-bubble').style.display = 'none';
         document.getElementById('chatbot-panel').style.display = 'flex';
@@ -195,7 +204,6 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
           });
           const data = await res.json();
            if (data.success) {
-           console.log("data",data);
              msg.textContent = 'Yayınlandı! Sayfa yenileniyor...';
              var se = document.getElementById('simple-editor');
              if (se) se.classList.remove('open');
@@ -209,7 +217,21 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
       };
     </script>
     <style>
-      /* Chatbot ve editor için izole CSS */
+      .suggested-prompt-btn {
+        background: #f7f9fb;
+        color: #1976d2;
+        border: 1.5px solid #1976d2;
+        border-radius: 18px;
+        padding: 6px 16px;
+        font-size: 0.98rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, border 0.15s;
+      }
+      .suggested-prompt-btn:hover {
+        background: #1976d2;
+        color: #fff;
+      }
       #chatbot-widget {
         position: fixed;
         bottom: 32px;
@@ -317,6 +339,33 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
       #simple-editor #se-msg{ margin-top:8px; font-size:.95rem; color:#333; }
       @media (max-width: 700px){ #simple-editor{ width: 92vw; right: -92vw; } }
     </style>
+  `;
+    }
+
+    function renderDownloadButton() {
+      return `
+    <button id="download-html-btn" style="position:fixed;top:24px;right:24px;z-index:99999;padding:10px 12px;font-size:1.6rem;font-weight:600;background:transparent;color:#222;border:none;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.07);cursor:pointer;transition:background 0.18s,box-shadow 0.18s;outline:none;">
+      ⬇️
+    </button>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('download-html-btn');
+        if (btn) {
+          btn.onmouseover = function(){ btn.style.background = '#f0f4ff'; btn.style.boxShadow = '0 4px 16px rgba(13,110,253,0.10)'; };
+          btn.onmouseout = function(){ btn.style.background = 'transparent'; btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)'; };
+          btn.onclick = function() {
+            var html = document.documentElement.outerHTML;
+            var blob = new Blob([html], {type: 'text/html'});
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'site.html';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(()=>{document.body.removeChild(a);}, 100);
+          };
+        }
+      });
+    </script>
   `;
     }
 
@@ -430,6 +479,7 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
     </style>
   </head>
   <body>
+    ${renderDownloadButton()}
     <nav>
       <a href="#index">${content.pages[0].title}</a>
       <a href="#about">${content.pages[1].title}</a>
@@ -567,6 +617,7 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
     </style>
   </head>
   <body>
+    ${renderDownloadButton()}
     <nav>
       <a href="#index">${content.pages[0].title}</a>
       <a href="#about">${content.pages[1].title}</a>
@@ -733,6 +784,7 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
     </style>
   </head>
   <body>
+    ${renderDownloadButton()}
     <div class="cv-container">
       <div class="cv-sidebar">
         <div class="cv-avatar"></div>
@@ -909,6 +961,7 @@ Bana aşağıdaki formatta JSON ver (hero_image alanı olmadan):
     </style>
   </head>
   <body>
+    ${renderDownloadButton()}
     <div class="blog-hero">
       <div class="blog-hero-content">
         <div class="blog-title">${content.title}</div>
